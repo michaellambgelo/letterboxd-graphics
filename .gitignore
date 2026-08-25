@@ -1,0 +1,6 @@
+node_modules/
+out/
+
+# Poster art is not ours to redistribute — supply your own images.
+posters/*
+!posters/.gitkeep

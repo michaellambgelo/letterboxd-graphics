@@ -1,0 +1,19 @@
+{
+  "title": "movies that feel like August",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 4,
+  "subtitle": "the end of summer, the start of school, and the people you meet in between",
+  "footer": "Call Me by Your Name, logged 05 Aug 2017 — the first film in the diary, and an August watch.",
+  "films": [
+    { "title": "Call Me by Your Name", "year": 2017 },
+    { "title": "Aftersun", "year": 2022 },
+    { "title": "Luca", "year": 2021 },
+    { "title": "Everybody Wants Some!!", "year": 2016 },
+    { "title": "Before Sunset", "year": 2004 },
+    { "title": "Lady Bird", "year": 2017 },
+    { "title": "20th Century Women", "year": 2016 },
+    { "title": "Past Lives", "year": 2023 }
+  ]
+}

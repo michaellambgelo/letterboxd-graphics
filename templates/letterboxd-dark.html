@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>letterboxd-graphics</title>
+<style>
+  :root {
+    --ground:  #14181c;   /* Letterboxd page background */
+    --raised:  #1c2228;
+    --ink:     #ffffff;
+    --muted:   #9ab;      /* LB metadata grey-blue */
+    --faint:   #678;
+    --green:   #00e054;
+    --blue:    #40bcf4;
+    --orange:  #ff8000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Helvetica Neue", -apple-system, "Segoe UI", Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #sheet {
+    width: var(--w);
+    height: var(--h);
+    padding: 62px 60px 52px;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #1b222a 0%, transparent 60%),
+      var(--ground);
+    overflow: hidden;
+  }
+
+  /* ---- header ---- */
+  header { flex: none; }
+
+  .eyebrow {
+    font-size: 17px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin-top: 16px;
+    font-size: 62px;
+    line-height: 1.02;
+    font-weight: 300;
+    letter-spacing: -.022em;
+    color: var(--ink);
+  }
+  h1 .accent {
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .subtitle {
+    margin-top: 16px;
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 74%;
+    font-weight: 300;
+  }
+
+  .rule {
+    margin-top: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--green) 0%, var(--blue) 46%, var(--orange) 100%);
+    opacity: .95;
+  }
+
+  /* ---- grid ---- */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 34px 0 6px;
+  }
+  #grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    column-gap: 26px;
+    row-gap: 30px;
+  }
+
+  .film { display: flex; flex-direction: column; }
+
+  .poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 5px;
+    background: var(--raised);
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 10px 26px rgba(0,0,0,.55);
+  }
+
+  .film-title {
+    margin-top: 13px;
+    font-size: 16.5px;
+    font-weight: 600;
+    line-height: 1.24;
+    letter-spacing: -.008em;
+    color: var(--ink);
+    /* Two lines max — a long title must not shove the row out of alignment. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Pinned to the bottom of the card: in a row where one title wraps to two
+     lines, every card's metadata still sits on the same baseline. */
+  .film-foot { margin-top: auto; }
+
+  .film-year {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--faint);
+    font-weight: 400;
+  }
+
+  .film-meta {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Stars: a grey track with a green overlay clipped to the rating, so half
+     stars render as an actual half glyph rather than the text "4.5". */
+  .stars {
+    position: relative;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 1;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+  .stars .track { color: #2c353d; }
+  .stars .fill {
+    position: absolute;
+    inset: 0;
+    color: var(--green);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .logs {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--faint);
+  }
+  .logs.rewatch { color: var(--orange); }
+
+  /* ---- footer ---- */
+  footer {
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #232a31;
+  }
+  .footnote {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--faint);
+    max-width: 78%;
+    font-weight: 300;
+  }
+  .handle {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .handle .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: baseline;
+  }
+  .dot.g { background: var(--green); }
+  .dot.b { background: var(--blue); }
+  .dot.o { background: var(--orange); }
+</style>
+</head>
+<body>
+<div id="sheet"></div>
+
+<script>
+(function () {
+  const g = window.__GRAPHIC__;
+  const sheet = document.getElementById('sheet');
+  sheet.style.setProperty('--w', g.width + 'px');
+  sheet.style.setProperty('--h', g.height + 'px');
+  sheet.style.setProperty('--cols', g.columns);
+
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+  ));
+
+  // Split the title so the final word can carry the accent weight.
+  function renderTitle(title) {
+    const words = String(title).trim().split(/\s+/);
+    const last = words.pop();
+    return esc(words.join(' ')) + (words.length ? ' ' : '') +
+           '<span class="accent">' + esc(last) + '</span>';
+  }
+
+  function stars(rating) {
+    if (rating === null || rating === undefined) return '';
+    const pct = Math.max(0, Math.min(1, rating / 5)) * 100;
+    const five = '★★★★★';
+    return '<span class="stars">' +
+             '<span class="track">' + five + '</span>' +
+             '<span class="fill" style="width:' + pct + '%">' + five + '</span>' +
+           '</span>';
+  }
+
+  function logs(n) {
+    if (n === null || n === undefined) return '';
+    const cls = n > 1 ? 'logs rewatch' : 'logs';
+    return '<span class="' + cls + '">' + n + (n === 1 ? ' log' : ' logs') + '</span>';
+  }
+
+  sheet.innerHTML =
+    '<header>' +
+      (g.eyebrow ? '<div class="eyebrow">' + esc(g.eyebrow) + '</div>' : '') +
+      '<h1>' + renderTitle(g.title) + '</h1>' +
+      (g.subtitle ? '<p class="subtitle">' + esc(g.subtitle) + '</p>' : '') +
+      '<div class="rule"></div>' +
+    '</header>' +
+    '<main><div id="grid">' +
+      g.films.map((f) =>
+        '<div class="film">' +
+          '<img class="poster" src="' + esc(f.poster) + '" alt="">' +
+          '<div class="film-title">' + esc(f.title) + '</div>' +
+          '<div class="film-foot">' +
+            '<div class="film-year">' + esc(f.year) + '</div>' +
+            '<div class="film-meta">' + stars(f.rating) + logs(f.logs) + '</div>' +
+          '</div>' +
+        '</div>'
+      ).join('') +
+    '</div></main>' +
+    '<footer>' +
+      '<div class="footnote">' + esc(g.footer || '') + '</div>' +
+      '<div class="handle">' +
+        '<span class="dot g"></span><span class="dot b"></span><span class="dot o"></span> ' +
+        esc(g.handle || 'letterboxd.com/michaellamb') +
+      '</div>' +
+    '</footer>';
+
+  // The exporter waits on this: fonts settled and every poster decoded.
+  Promise.all([
+    document.fonts.ready,
+    ...Array.from(document.images).map((img) =>
+      img.complete ? Promise.resolve()
+                   : new Promise((res) => { img.onload = img.onerror = res; })
+    ),
+  ]).then(() => { document.body.dataset.ready = '1'; });
+})();
+</script>
+</body>
+</html>
