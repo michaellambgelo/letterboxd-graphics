@@ -123,6 +123,15 @@
   .opt img { width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block; }
   .opt .cap { padding: 4px 6px; font-size: 10.5px; color: var(--faint); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   #modal-note { color: var(--muted); font-size: 12px; white-space: pre-wrap; margin-bottom: 12px; line-height: 1.5; }
+  #modal-note.err { color: #ffb4b4; }
+  #modal-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  #modal-links a {
+    color: var(--blue); text-decoration: none; font-size: 12px;
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px;
+  }
+  #modal-links a:hover { border-color: var(--blue); background: #18242c; }
+  #paste-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  #paste-row input { flex: 1; }
 </style>
 </head>
 <body>
@@ -201,6 +210,11 @@
       <button id="modal-close" class="ghost">Close</button>
     </div>
     <div id="modal-body">
+      <div id="modal-links"></div>
+      <div id="paste-row">
+        <input type="text" id="paste-url" placeholder="…or paste a poster image URL and press Enter" autocomplete="off" spellcheck="false">
+        <button id="paste-go">Use</button>
+      </div>
       <div id="modal-note"></div>
       <div id="poster-grid"></div>
     </div>

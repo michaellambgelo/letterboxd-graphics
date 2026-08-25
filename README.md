@@ -48,6 +48,14 @@ Fields on the left, the graphic live-rendering on the right. The preview is the
 - **Poster picker** — click a film's thumbnail. Offers the current file, the
   Letterboxd poster, and (with a TMDB credential) every alternate TMDB holds for
   that film, including textless art. Choosing one downloads it into `posters/`.
+
+  It also deep-links straight to that film's TMDB poster gallery, its TMDB page,
+  and its Letterboxd page — **no credential required**, because the TMDB id comes
+  off the Letterboxd page for free. So the keyless path to custom art is: open the
+  gallery, copy any image address, paste it into the picker's URL box. Both
+  `image.tmdb.org` and `media.themoviedb.org` links work, and whatever size you
+  copied is normalised up to `w780`, so grabbing a page thumbnail still gives a
+  full-resolution poster.
 - **Type sizes** — a global multiplier plus an individual size for all nine text
   elements: eyebrow, title, subtitle, film title, film year, stars, log count,
   footnote, handle.

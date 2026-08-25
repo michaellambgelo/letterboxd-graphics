@@ -76,8 +76,16 @@ There is no test suite. Verification is visual: build the PNG and look at it.
 - **Render saves first.** The editor's Render button PUTs the draft before
   building, because the build reads the file, not the browser's state.
 - **The editor writes files.** Graphic names are validated against
-  `^[a-z0-9][a-z0-9._-]*$` and poster URLs against an `image.tmdb.org` /
-  `a.ltrbxd.com` allowlist. The server binds to `127.0.0.1` only. Keep all three.
+  `^[a-z0-9][a-z0-9._-]*$`, and every poster URL goes through
+  `normalisePosterUrl()` — https only, host in {`image.tmdb.org`,
+  `media.themoviedb.org`, `a.ltrbxd.com`}. The server binds to `127.0.0.1` only.
+  Keep all three. `media.themoviedb.org` is in the list because that is what the
+  TMDB *website* serves, so a copy-paste off the posters gallery lands there.
+- **Poster URLs carry the file's mtime** (`?v=…`, added by `versioned()` in
+  `lib/graphic.mjs`). Swapping a film's art rewrites the same path, and Chrome
+  will keep showing the image it already has — which makes the preview silently
+  lie about the PNG. Don't strip the query, and don't "fix" a stale poster by
+  reloading the iframe; that was the old hack and it wasn't reliable.
 - **Don't hand-roll brand assets.** The footer decal is Letterboxd's own SVG. If
   you need another mark, look in `letterboxd-viewer` before drawing one.
 

@@ -416,17 +416,20 @@ async function openPosterPicker(index) {
   state.posterFor = index;
   $('#modal-title').textContent = `Poster — ${film.title} (${film.year})`;
   $('#poster-grid').textContent = '';
-  $('#modal-note').textContent = 'Loading…';
+  $('#modal-links').textContent = '';
+  $('#paste-url').value = '';
+  setNote('Loading…');
   $('#modal').className = 'open';
 
   let data;
   try {
     data = await api(`/api/posters?title=${encodeURIComponent(film.title)}&year=${encodeURIComponent(film.year)}`);
   } catch (err) {
-    $('#modal-note').textContent = err.message;
+    setNote(err.message, true);
     return;
   }
-  $('#modal-note').textContent = data.note || '';
+  setNote(data.note || '');
+  renderLinks(data.links, film);
 
   const grid = $('#poster-grid');
   grid.textContent = '';
@@ -442,14 +445,49 @@ async function openPosterPicker(index) {
     grid.appendChild(card);
   }
   if (!data.options.length) {
-    $('#modal-note').textContent = (data.note ? data.note + '\n\n' : '') +
-      'No poster options found. Drop a file into posters/ named ' + data.stem + '.jpg';
+    setNote((data.note ? data.note + '\n\n' : '') +
+      'No poster options found. Open the TMDB gallery above, copy an image address, ' +
+      'and paste it in — or drop a file into posters/ named ' + data.stem + '.jpg');
   }
+}
+
+function setNote(text, isError) {
+  const n = $('#modal-note');
+  n.textContent = text || '';
+  n.className = isError ? 'err' : '';
+}
+
+// Deep links work with no credential — the TMDB id comes off the Letterboxd page.
+// Browsing the gallery and pasting an image address is the keyless way to get
+// custom art in.
+function renderLinks(links, film) {
+  const box = $('#modal-links');
+  box.textContent = '';
+  if (!links) return;
+  const add = (href, label) => {
+    if (!href) return;
+    const a = el('a', null, label);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    box.appendChild(a);
+  };
+  add(links.tmdbPosters, 'All posters on TMDB ↗');
+  add(links.tmdb, 'TMDB film page ↗');
+  add(links.letterboxd, 'Letterboxd ↗');
+}
+
+async function usePastedPoster() {
+  const input = $('#paste-url');
+  const src = input.value.trim();
+  if (!src) return;
+  if (state.posterFor == null) return;
+  await choosePoster(state.posterFor, { url: src });
 }
 
 async function choosePoster(index, opt) {
   const film = state.cfg.films[index];
-  $('#modal-note').textContent = 'Downloading…';
+  setNote('Downloading…');
   try {
     await api('/api/poster', {
       method: 'POST',
@@ -457,23 +495,13 @@ async function choosePoster(index, opt) {
       body: JSON.stringify({ title: film.title, year: film.year, url: opt.url }),
     });
   } catch (err) {
-    $('#modal-note').textContent = err.message;
+    setNote(err.message, true);
     return;
   }
   $('#modal').className = '';
-  // Bust the cached <img> for the poster we just overwrote.
-  bustPosterCache();
+  // No cache-busting needed here: poster URLs carry the file's mtime, so the
+  // swapped art comes back under a new URL on the next resolve.
   refreshPreview();
-}
-
-let bust = 0;
-function bustPosterCache() {
-  bust++;
-  const frame = $('#frame');
-  if (frame.contentWindow) {
-    frame.contentWindow.location.reload();
-    frame.onload = () => refreshPreview();
-  }
 }
 
 // ---------------------------------------------------------------- load/save
@@ -561,6 +589,10 @@ async function init() {
   $('#render').addEventListener('click', render);
   $('#open-png').addEventListener('click', () => { if (state.lastPng) window.open(state.lastPng + '?v=' + Date.now(), '_blank'); });
   $('#modal-close').addEventListener('click', () => { $('#modal').className = ''; });
+  $('#paste-go').addEventListener('click', usePastedPoster);
+  $('#paste-url').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); usePastedPoster(); }
+  });
   $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') $('#modal').className = ''; });
 
   $('#new').addEventListener('click', () => createGraphic(null));

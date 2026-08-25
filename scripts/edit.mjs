@@ -17,6 +17,7 @@ import { startStaticServer } from '../lib/render.mjs';
 import {
   ROOT, letterboxdFilmInfo, tmdbCredential, hasTmdbCredential, authFor,
   tmdbPosterOptions, tmdbSearch, downloadPoster, findPosterFile, TMDB_HELP,
+  normalisePosterUrl,
 } from '../lib/posters.mjs';
 
 // A graphic name becomes a filename, so it never gets to contain a dot or a
@@ -189,7 +190,15 @@ async function api(req, res) {
         }
       }
 
-      json(res, 200, { options, note, tmdbId: info?.tmdbId ?? null, stem: posterStem(title, year) });
+      const links = {
+        letterboxd: info?.page || null,
+        tmdb: info?.tmdbId ? `https://www.themoviedb.org/movie/${info.tmdbId}` : null,
+        tmdbPosters: info?.tmdbId
+          ? `https://www.themoviedb.org/movie/${info.tmdbId}/images/posters`
+          : `https://www.themoviedb.org/search?query=${encodeURIComponent(title)}`,
+      };
+
+      json(res, 200, { options, note, links, tmdbId: info?.tmdbId ?? null, stem: posterStem(title, year) });
       return true;
     }
 
@@ -198,11 +207,10 @@ async function api(req, res) {
       const { title, year, url: src } = await readBody(req);
       if (!title || !year || !src) { json(res, 400, { error: 'title, year and url are required' }); return true; }
       if (String(src).startsWith('/posters/')) { json(res, 200, { unchanged: true }); return true; }
-      if (!/^https:\/\/(image\.tmdb\.org|a\.ltrbxd\.com)\//.test(src)) {
-        json(res, 400, { error: 'poster URL must be on image.tmdb.org or a.ltrbxd.com' });
-        return true;
-      }
-      const saved = await downloadPoster(src, { title, year });
+      let url;
+      try { url = normalisePosterUrl(src); }
+      catch (err) { json(res, 400, { error: err.message }); return true; }
+      const saved = await downloadPoster(url, { title, year });
       json(res, 200, saved);
       return true;
     }
