@@ -6,7 +6,8 @@
   "description": "Shareable film-poster graphics built from Letterboxd diary data",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "fetch-posters": "node scripts/fetch-posters.mjs"
+    "fetch-posters": "node scripts/fetch-posters.mjs",
+    "edit": "node scripts/edit.mjs"
   },
   "dependencies": {
     "playwright": "^1.56.0"

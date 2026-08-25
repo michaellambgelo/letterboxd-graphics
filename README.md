@@ -22,12 +22,44 @@ graphics/august.json  +  posters/*.jpg
 
 ```bash
 npm install
-npm run fetch-posters august     # optional — fills gaps from TMDB
+npm run fetch-posters august     # fills poster gaps — no API key needed
 npm run build august             # → out/august.png
+npm run edit                     # visual editor with live preview
 ```
 
 `out/august.png` renders at 2× (2160×2700) so type stays crisp after a platform
 downscales it. Pass `-- --1x` for the nominal 1080×1350.
+
+## The editor
+
+```bash
+npm run edit           # opens the first graphic
+npm run edit august    # opens a specific one
+```
+
+Fields on the left, the graphic live-rendering on the right. The preview is the
+**real** `letterboxd-dark.html` in an iframe, repainted by calling its
+`__RENDER__` on every keystroke — so it cannot drift from the exported PNG.
+
+- **Copy** — eyebrow, title, subtitle, footer, handle.
+- **Films** — drag to reorder, ✕ to remove, click a row to reveal its per-film
+  overrides (displayed title, rating, log count). Type in the add box to search
+  your diary; picking a result fills in the rating and watch count.
+- **Poster picker** — click a film's thumbnail. Offers the current file, the
+  Letterboxd poster, and (with a TMDB credential) every alternate TMDB holds for
+  that film, including textless art. Choosing one downloads it into `posters/`.
+- **Type sizes** — a global multiplier plus an individual size for all nine text
+  elements: eyebrow, title, subtitle, film title, film year, stars, log count,
+  footnote, handle.
+- **Layout** — columns, width, height, grid gap, poster corner radius.
+- **Colour** — background and the three accents.
+
+**Render PNG** always saves first, so the file you get matches the preview you
+were looking at. `⌘S` saves; the pill by the buttons shows unsaved state, and
+closing with unsaved changes warns you.
+
+Everything the editor writes is plain JSON in `graphics/<name>.json` — nothing
+stops you editing that by hand instead.
 
 ## Defining a graphic
 
@@ -60,6 +92,28 @@ Films render in the order written. Per-film overrides:
 
 Setting both `rating` and `logs` skips the diary join entirely, so a graphic
 doesn't have to be about your own watches.
+
+### Theme
+
+Optional. Anything omitted falls back to `THEME_DEFAULTS` in `lib/graphic.mjs`,
+so an older config keeps rendering identically as knobs get added.
+
+```json
+"theme": {
+  "ground": "#14181c",
+  "accent": "#00e054", "accent2": "#40bcf4", "accent3": "#ff8000",
+  "gap": 26, "posterRadius": 5,
+  "scale": 1,
+  "fontSize": {
+    "eyebrow": 17, "title": 62, "subtitle": 19,
+    "filmTitle": 16.5, "filmYear": 14, "stars": 15,
+    "logs": 13, "footnote": 14.5, "handle": 14
+  }
+}
+```
+
+`scale` multiplies every font size at once; `fontSize` sets them individually, in
+px at the nominal 1080px width.
 
 ## Posters
 
@@ -118,6 +172,12 @@ green `#00e054`, blue `#40bcf4`, orange `#ff8000`). Ratings render as real half
 stars, not the text "4.5"; watch counts turn orange once a film is a rewatch.
 The grid follows `columns`, so 6 or 9 films work without touching the template.
 
-A template is a standalone HTML file that reads `window.__GRAPHIC__` and sets
-`document.body.dataset.ready = '1'` once fonts and images have settled. Add a new
-one by copying the existing file and naming it in a config's `template`.
+The Letterboxd decal in the footer is the real brand asset, copied from
+`letterboxd-viewer/assets/images/` — not a hand-rolled imitation.
+
+A template is a standalone HTML file that defines `window.__RENDER__(graphic)`,
+paints from the argument, and resolves once fonts and images have settled
+(setting `document.body.dataset.ready`). The PNG build injects
+`window.__GRAPHIC__` and lets the template auto-call itself; the editor calls
+`__RENDER__` directly for live updates. Add a new one by copying the existing
+file and naming it in a config's `template`.

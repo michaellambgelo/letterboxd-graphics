@@ -20,6 +20,8 @@ npm run build <name> -- --out p.png  # explicit destination
 npm run fetch-posters <name>         # fill poster gaps — Letterboxd first, no credential
 npm run fetch-posters <name> -- --yes # don't prompt on the TMDB fallback
 npm run fetch-posters <name> -- --tmdb # force the TMDB path
+npm run edit [<name>]                # visual editor (loopback only)
+npm run edit -- --no-open            # don't launch a browser (use from a tool call)
 ```
 
 `fetch-posters` needs **no credential** for anything you have logged. Pass `--yes`
@@ -38,8 +40,14 @@ There is no test suite. Verification is visual: build the PNG and look at it.
 | `templates/*.html` | Standalone HTML themes reading `window.__GRAPHIC__` |
 | `lib/join.mjs` | Diary join against `letterboxd-viewer` |
 | `lib/slug.mjs` | Canonical slug / poster stem / join key |
-| `scripts/build.mjs` | Static server + playwright screenshot |
+| `lib/graphic.mjs` | Config → render-ready payload; `THEME_DEFAULTS` |
+| `lib/render.mjs` | Static server + the screenshot routine |
+| `lib/posters.mjs` | Letterboxd + TMDB poster sourcing |
+| `scripts/build.mjs` | CLI wrapper around graphic + render |
 | `scripts/fetch-posters.mjs` | Poster gap-filler: Letterboxd primary, TMDB fallback |
+| `scripts/edit.mjs` | Editor server (static + JSON API) |
+| `editor/` | Editor UI — plain HTML/JS, no build step |
+| `assets/` | The real Letterboxd decal, copied from letterboxd-viewer |
 
 ## Things that will bite
 
@@ -60,6 +68,18 @@ There is no test suite. Verification is visual: build the PNG and look at it.
   graphic can't ship with `0 logs` under a film. Don't "helpfully" default to
   zero or skip the film.
 - **Don't commit poster art.** `posters/` is gitignored deliberately.
+- **One render path, not two.** `lib/graphic.mjs` + `lib/render.mjs` are shared by
+  the PNG build and the editor preview. If you add a rendering behaviour to one
+  and not the other, the preview starts lying about the output — which is this
+  tool's worst possible bug. Same for poster logic: it lives in `lib/posters.mjs`,
+  not copied into a script.
+- **Render saves first.** The editor's Render button PUTs the draft before
+  building, because the build reads the file, not the browser's state.
+- **The editor writes files.** Graphic names are validated against
+  `^[a-z0-9][a-z0-9._-]*$` and poster URLs against an `image.tmdb.org` /
+  `a.ltrbxd.com` allowlist. The server binds to `127.0.0.1` only. Keep all three.
+- **Don't hand-roll brand assets.** The footer decal is Letterboxd's own SVG. If
+  you need another mark, look in `letterboxd-viewer` before drawing one.
 
 ## Where posters come from
 
@@ -88,9 +108,17 @@ challenge as a source change, not a transient error.
 
 Copy `templates/letterboxd-dark.html`. A template must:
 
-1. Read `window.__GRAPHIC__` (`{ title, subtitle, footer, width, height, columns, films[] }`).
-2. Size `#sheet` from `--w` / `--h` — the build screenshots that element, not the
+1. Define `window.__RENDER__(graphic)` — paint from the **argument**, never from a
+   captured value. The editor calls it repeatedly on the same document.
+2. Auto-call it at the end: `if (window.__GRAPHIC__) window.__RENDER__(window.__GRAPHIC__);`
+   That is how the PNG build drives it.
+3. Set `document.body.dataset.ready = '0'` when painting starts and `'1'` once
+   fonts and images settle; return that promise.
+4. Size `#sheet` from `--w` / `--h` — the build screenshots that element, not the
    viewport.
-3. Set `document.body.dataset.ready = '1'` when fonts and images have settled.
+5. Read theme knobs off `graphic.theme` and apply them as CSS custom properties,
+   with the template's own values as fallbacks: `ground`, `accent`, `accent2`,
+   `accent3`, `gap`, `posterRadius`, `scale`, and the nine `fontSize` entries.
 
-Then name it in a config's `template` field.
+Then name it in a config's `template` field. The editor picks up a new template
+automatically; its Type/Layout/Colour knobs assume the contract above.

@@ -5,6 +5,9 @@
 <title>letterboxd-graphics</title>
 <style>
   :root {
+    /* Overridden per-graphic from cfg.theme — see THEME_DEFAULTS in lib/graphic.mjs.
+       The values here are the fallbacks, so a config with no theme block
+       renders exactly as it always did. */
     --ground:  #14181c;   /* Letterboxd page background */
     --raised:  #1c2228;
     --ink:     #ffffff;
@@ -40,7 +43,7 @@
   header { flex: none; }
 
   .eyebrow {
-    font-size: 17px;
+    font-size: var(--fs-eyebrow);
     letter-spacing: .34em;
     text-transform: uppercase;
     color: var(--faint);
@@ -49,7 +52,7 @@
 
   h1 {
     margin-top: 16px;
-    font-size: 62px;
+    font-size: var(--fs-title);
     line-height: 1.02;
     font-weight: 300;
     letter-spacing: -.022em;
@@ -57,12 +60,12 @@
   }
   h1 .accent {
     font-weight: 700;
-    color: var(--green);
+    color: var(--accent);
   }
 
   .subtitle {
     margin-top: 16px;
-    font-size: 19px;
+    font-size: var(--fs-subtitle);
     line-height: 1.45;
     color: var(--muted);
     max-width: 74%;
@@ -73,7 +76,7 @@
     margin-top: 28px;
     height: 3px;
     border-radius: 2px;
-    background: linear-gradient(90deg, var(--green) 0%, var(--blue) 46%, var(--orange) 100%);
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 46%, var(--accent3) 100%);
     opacity: .95;
   }
 
@@ -88,8 +91,8 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
-    column-gap: 26px;
-    row-gap: 30px;
+    column-gap: var(--gap);
+    row-gap: calc(var(--gap) + 4px);
   }
 
   .film { display: flex; flex-direction: column; }
@@ -97,7 +100,7 @@
   .poster {
     width: 100%;
     aspect-ratio: 2 / 3;
-    border-radius: 5px;
+    border-radius: var(--poster-radius);
     background: var(--raised);
     object-fit: cover;
     display: block;
@@ -106,9 +109,10 @@
 
   .film-title {
     margin-top: 13px;
-    font-size: 16.5px;
+    font-size: var(--fs-film-title);
     font-weight: 600;
     line-height: 1.24;
+    max-height: calc(var(--fs-film-title) * 1.24 * 2);
     letter-spacing: -.008em;
     color: var(--ink);
     /* Two lines max — a long title must not shove the row out of alignment. */
@@ -124,7 +128,7 @@
 
   .film-year {
     margin-top: 4px;
-    font-size: 14px;
+    font-size: var(--fs-film-year);
     color: var(--faint);
     font-weight: 400;
   }
@@ -141,7 +145,7 @@
   .stars {
     position: relative;
     display: inline-block;
-    font-size: 15px;
+    font-size: var(--fs-stars);
     line-height: 1;
     letter-spacing: 1.5px;
     white-space: nowrap;
@@ -150,18 +154,18 @@
   .stars .fill {
     position: absolute;
     inset: 0;
-    color: var(--green);
+    color: var(--accent);
     overflow: hidden;
     white-space: nowrap;
   }
 
   .logs {
-    font-size: 13px;
+    font-size: var(--fs-logs);
     font-weight: 600;
     letter-spacing: .01em;
     color: var(--faint);
   }
-  .logs.rewatch { color: var(--orange); }
+  .logs.rewatch { color: var(--accent3); }
 
   /* ---- footer ---- */
   footer {
@@ -174,49 +178,85 @@
     border-top: 1px solid #232a31;
   }
   .footnote {
-    font-size: 14.5px;
+    font-size: var(--fs-footnote);
     line-height: 1.5;
     color: var(--faint);
     max-width: 78%;
     font-weight: 300;
   }
   .handle {
-    font-size: 14px;
+    font-size: var(--fs-handle);
     font-weight: 600;
     letter-spacing: .04em;
     color: var(--muted);
     white-space: nowrap;
   }
-  .handle .dot {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-right: 4px;
-    vertical-align: baseline;
+  .handle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
   }
-  .dot.g { background: var(--green); }
-  .dot.b { background: var(--blue); }
-  .dot.o { background: var(--orange); }
+  /* The official decal, copied from letterboxd-viewer — not a hand-rolled
+     imitation. It is a round badge on its own #202830 ground. */
+  .handle .decal {
+    width: 22px;
+    height: 22px;
+    display: block;
+    flex: none;
+  }
 </style>
 </head>
 <body>
 <div id="sheet"></div>
 
 <script>
-(function () {
-  const g = window.__GRAPHIC__;
+// window.__RENDER__(graphic) paints the sheet and resolves when it has settled.
+// The PNG build injects window.__GRAPHIC__ before load and lets the auto-call
+// below fire; the editor calls __RENDER__ directly on every keystroke, so the
+// preview and the export run the exact same code.
+window.__RENDER__ = function (g) {
   const sheet = document.getElementById('sheet');
+  document.body.dataset.ready = '0';
+
+  const t = g.theme || {};
+  const root = document.documentElement.style;
+  if (t.ground) root.setProperty('--ground', t.ground);
+  if (t.accent) root.setProperty('--accent', t.accent);
+  if (t.accent2) root.setProperty('--accent2', t.accent2);
+  if (t.accent3) root.setProperty('--accent3', t.accent3);
+  root.setProperty('--gap', (t.gap ?? 26) + 'px');
+  root.setProperty('--poster-radius', (t.posterRadius ?? 5) + 'px');
+
+  // Type sizes: each element's px value times the global scale.
+  var scale = t.scale == null ? 1 : Number(t.scale) || 1;
+  var fs = t.fontSize || {};
+  var FS_DEFAULTS = {
+    eyebrow: 17, title: 62, subtitle: 19, filmTitle: 16.5,
+    filmYear: 14, stars: 15, logs: 13, footnote: 14.5, handle: 14,
+  };
+  var FS_VARS = {
+    eyebrow: '--fs-eyebrow', title: '--fs-title', subtitle: '--fs-subtitle',
+    filmTitle: '--fs-film-title', filmYear: '--fs-film-year', stars: '--fs-stars',
+    logs: '--fs-logs', footnote: '--fs-footnote', handle: '--fs-handle',
+  };
+  Object.keys(FS_VARS).forEach(function (k) {
+    var px = fs[k] == null ? FS_DEFAULTS[k] : Number(fs[k]);
+    if (!isFinite(px)) px = FS_DEFAULTS[k];
+    root.setProperty(FS_VARS[k], (px * scale) + 'px');
+  });
+
   sheet.style.setProperty('--w', g.width + 'px');
   sheet.style.setProperty('--h', g.height + 'px');
   sheet.style.setProperty('--cols', g.columns);
 
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => (
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
   ));
 
   // Split the title so the final word can carry the accent weight.
   function renderTitle(title) {
-    const words = String(title).trim().split(/\s+/);
+    const words = String(title || '').trim().split(/\s+/);
+    if (!words.length) return '';
     const last = words.pop();
     return esc(words.join(' ')) + (words.length ? ' ' : '') +
            '<span class="accent">' + esc(last) + '</span>';
@@ -225,7 +265,7 @@
   function stars(rating) {
     if (rating === null || rating === undefined) return '';
     const pct = Math.max(0, Math.min(1, rating / 5)) * 100;
-    const five = '★★★★★';
+    const five = '\u2605\u2605\u2605\u2605\u2605';
     return '<span class="stars">' +
              '<span class="track">' + five + '</span>' +
              '<span class="fill" style="width:' + pct + '%">' + five + '</span>' +
@@ -234,8 +274,8 @@
 
   function logs(n) {
     if (n === null || n === undefined) return '';
-    const cls = n > 1 ? 'logs rewatch' : 'logs';
-    return '<span class="' + cls + '">' + n + (n === 1 ? ' log' : ' logs') + '</span>';
+    return '<span class="' + (n > 1 ? 'logs rewatch' : 'logs') + '">' +
+           n + (n === 1 ? ' log' : ' logs') + '</span>';
   }
 
   sheet.innerHTML =
@@ -246,9 +286,11 @@
       '<div class="rule"></div>' +
     '</header>' +
     '<main><div id="grid">' +
-      g.films.map((f) =>
+      (g.films || []).map((f) =>
         '<div class="film">' +
-          '<img class="poster" src="' + esc(f.poster) + '" alt="">' +
+          (f.poster
+            ? '<img class="poster" src="' + esc(f.poster) + '" alt="">'
+            : '<div class="poster"></div>') +
           '<div class="film-title">' + esc(f.title) + '</div>' +
           '<div class="film-foot">' +
             '<div class="film-year">' + esc(f.year) + '</div>' +
@@ -260,20 +302,22 @@
     '<footer>' +
       '<div class="footnote">' + esc(g.footer || '') + '</div>' +
       '<div class="handle">' +
-        '<span class="dot g"></span><span class="dot b"></span><span class="dot o"></span> ' +
-        esc(g.handle || 'letterboxd.com/michaellamb') +
+        '<img class="decal" src="/assets/letterboxd-decal-dots-rgb.svg" alt="Letterboxd">' +
+        '<span>' + esc(g.handle || 'letterboxd.com/michaellamb') + '</span>' +
       '</div>' +
     '</footer>';
 
-  // The exporter waits on this: fonts settled and every poster decoded.
-  Promise.all([
+  // The exporter waits on this: fonts settled and every image decoded.
+  return Promise.all([
     document.fonts.ready,
     ...Array.from(document.images).map((img) =>
       img.complete ? Promise.resolve()
                    : new Promise((res) => { img.onload = img.onerror = res; })
     ),
   ]).then(() => { document.body.dataset.ready = '1'; });
-})();
+};
+
+if (window.__GRAPHIC__) window.__RENDER__(window.__GRAPHIC__);
 </script>
 </body>
 </html>
