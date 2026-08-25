@@ -70,24 +70,29 @@ all work. The build tells you the exact filename it wants when one is missing.
 `posters/` is **gitignored** — poster art isn't ours to redistribute. The repo
 ships the configs and the code; you supply the images.
 
-`npm run fetch-posters <name>` fills only the gaps from TMDB. A file you placed
-by hand always wins. It shows every candidate with its release year before
-downloading, because same-titled films are common (*Luca* 2021 vs. 2008).
+`npm run fetch-posters <name>` fills only the gaps. A file you placed by hand
+always wins.
 
-### TMDB credential
+### It needs no API key
 
-Never exported into the environment or passed on the command line — it's read
-per-run from the macOS Keychain:
+The newest archive's `watched.csv` carries a film-level `boxd.it` URI for every
+film in the diary. That URI *is* the film, so following it and reading the page's
+JSON-LD `image` gives a 600×900 poster with no title search — and therefore no
+same-title collision to resolve. `Luca (2021)` resolves itself to
+`/film/luca-2021`.
+
+### TMDB fallback
+
+Only used for a film with **no** `boxd.it` URI — something you haven't watched,
+included through config overrides. Force it with `--tmdb`. The credential is read
+per-run from the macOS Keychain, never exported or passed on the command line:
 
 ```bash
 ~/.dotfiles/secrets/keychain-secrets.sh set TMDB_API_KEY
 ```
 
-and add `TMDB_API_KEY` to `~/.dotfiles/secrets/secrets.manifest`. A v3 API key
-and a v4 read-access token both work; the script tells them apart by shape.
-
-This gates **only** poster fetching. Drop the files in by hand and the repo needs
-no key at all.
+plus `TMDB_API_KEY` in `~/.dotfiles/secrets/secrets.manifest`. A v3 API key and a
+v4 read-access token both work; the script tells them apart by shape.
 
 ## The diary join
 
