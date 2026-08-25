@@ -1,7 +1,7 @@
 # letterboxd-graphics
 
 Shareable film-poster graphics, built from the diary data in
-[`letterboxd-viewer`](../letterboxd-viewer).
+[`letterboxd-viewer`](https://github.com/michaellambgelo/letterboxd-viewer).
 
 You describe a graphic in a JSON file, drop poster images in `posters/`, and the
 build renders a PNG through headless Chromium. Ratings and watch counts are
@@ -151,20 +151,28 @@ avatars and backdrops keep their own dimensions.
 ### TMDB fallback
 
 Only used for a film with **no** `boxd.it` URI — something you haven't watched,
-included through config overrides. Force it with `--tmdb`. The credential is read
-per-run from the macOS Keychain, never exported or passed on the command line:
+included through config overrides. Force it with `--tmdb`. A v3 API key and a v4
+read-access token both work; the script tells them apart by shape.
+
+Set it either way:
 
 ```bash
-~/.dotfiles/secrets/keychain-secrets.sh set TMDB_API_KEY
+# environment variable
+export TMDB_API_KEY=...
+
+# or macOS Keychain, so it never lands in a shell history or a dotfile
+security add-generic-password -a "$USER" -s dotfiles.TMDB_API_KEY -w
 ```
 
-plus `TMDB_API_KEY` in `~/.dotfiles/secrets/secrets.manifest`. A v3 API key and a
-v4 read-access token both work; the script tells them apart by shape.
+The scripts check `TMDB_API_KEY` first, then fall back to reading
+`dotfiles.TMDB_API_KEY` from the Keychain per run — the value is never passed as
+an argument or written to disk.
 
 ## The diary join
 
-`lib/join.mjs` reads `../letterboxd-viewer` (override with
-`LETTERBOXD_VIEWER_PATH`):
+`lib/join.mjs` reads a sibling checkout of
+[`letterboxd-viewer`](https://github.com/michaellambgelo/letterboxd-viewer) at
+`../letterboxd-viewer` — override the location with `LETTERBOXD_VIEWER_PATH`:
 
 - **`data/viewing_history.json`** is the primary source — the merged archive+RSS
   diary. `logs` is the entry count; `rating` is the latest non-null
@@ -194,3 +202,11 @@ paints from the argument, and resolves once fonts and images have settled
 `window.__GRAPHIC__` and lets the template auto-call itself; the editor calls
 `__RENDER__` directly for live updates. Add a new one by copying the existing
 file and naming it in a config's `template`.
+
+## License
+
+MIT — see [LICENSE.md](LICENSE.md).
+
+The Letterboxd decal in `assets/` is Letterboxd's own brand asset, included for
+attribution and not covered by that licence. Poster art is not redistributed:
+`posters/` is gitignored, and you supply the images.
