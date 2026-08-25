@@ -2,7 +2,7 @@
   "title": "movies that feel like August",
   "template": "letterboxd-dark",
   "width": 1080,
-  "height": 1350,
+  "height": 1440,
   "columns": 4,
   "footer": "Call Me by Your Name, logged 05 Aug 2017 — the first film in my Letterboxd diary, and an August watch.",
   "films": [
@@ -43,8 +43,15 @@
     "fontSize": {
       "subtitle": 28.5,
       "logs": 18.5,
-      "footnote": 23
-    }
+      "footnote": 23,
+      "title": 62,
+      "filmTitle": 22,
+      "filmYear": 18,
+      "handle": 18
+    },
+    "gap": 20,
+    "posterRadius": 5
   },
-  "subtitle": "end of summer, but beginning of many things"
+  "subtitle": "end of summer, but beginning of many things",
+  "eyebrow": "from michael lamb's letterboxd diary"
 }
