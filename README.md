@@ -139,9 +139,14 @@ always wins.
 
 The newest archive's `watched.csv` carries a film-level `boxd.it` URI for every
 film in the diary. That URI *is* the film, so following it and reading the page's
-JSON-LD `image` gives a 600×900 poster with no title search — and therefore no
-same-title collision to resolve. `Luca (2021)` resolves itself to
-`/film/luca-2021`.
+JSON-LD `image` gives a poster with no title search — and therefore no same-title
+collision to resolve. `Luca (2021)` resolves itself to `/film/luca-2021`.
+
+The page offers 600×900, but Letterboxd's CDN renders sizes on demand: the
+`0-<w>-0-<h>-crop` segment of the URL is a *request*, not a fixed asset. The
+fetcher rewrites it to **1000×1500**, since a poster is drawn ~434 device px wide
+at 2× export and 600 leaves almost no headroom. Only 2:3 crops are rewritten, so
+avatars and backdrops keep their own dimensions.
 
 ### TMDB fallback
 

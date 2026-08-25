@@ -94,8 +94,15 @@ There is no test suite. Verification is visual: build the PNG and look at it.
 **Letterboxd is the primary source and needs no credential.** The newest archive's
 `watched.csv` carries a film-level `boxd.it` URI for every film in the diary.
 That URI *is* the film — follow it and read the page's `application/ld+json`
-`image` field for a 600×900 poster. No title search, so no same-title collision
-to resolve: `Luca (2021)` resolves itself to `/film/luca-2021`.
+`image` field. No title search, so no same-title collision to resolve:
+`Luca (2021)` resolves itself to `/film/luca-2021`.
+
+`upscaleLetterboxdPoster()` then rewrites the `0-<w>-0-<h>-crop` segment to
+**1000×1500**. That segment is a size *request* the CDN renders on demand, not a
+fixed asset — the page only ever offers 600×900, which is barely above the ~434
+device px a poster is drawn at. The aspect guard (ratio 1.4–1.6) exists because
+avatars (1:1) and backdrops (16:9) share the URL shape and must not be resized.
+Borrowed from `boxd-card/src/shared/posters.ts`.
 
 This is the same source `letterboxd-viewer/assets/images/fulls/` came from — those
 29 files are 600×900 too. Nothing in that repo calls the TMDB *API*; its `tmdbId`
