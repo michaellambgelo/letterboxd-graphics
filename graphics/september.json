@@ -1,0 +1,66 @@
+{
+  "title": "movies that feel like September",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1300,
+  "columns": 5,
+  "eyebrow": "from michael lamb's letterboxd diary",
+  "subtitle": "the year languors toward an end it cannot yet see",
+  "films": [
+    {
+      "title": "Dead Poets Society",
+      "year": 1989
+    },
+    {
+      "title": "First Reformed",
+      "year": 2017
+    },
+    {
+      "title": "Jeremiah Johnson",
+      "year": 1972
+    },
+    {
+      "title": "Vortex",
+      "year": 2021
+    },
+    {
+      "title": "The Place Beyond the Pines",
+      "year": 2012
+    },
+    {
+      "title": "I Saw the TV Glow",
+      "year": 2024
+    },
+    {
+      "title": "Citizen Kane",
+      "year": 1941
+    },
+    {
+      "title": "Sound of Metal",
+      "year": 2019
+    },
+    {
+      "title": "The History of Sound",
+      "year": 2025
+    },
+    {
+      "title": "Pig",
+      "year": 2021
+    }
+  ],
+  "theme": {
+    "fontSize": {
+      "eyebrow": 26,
+      "title": 62,
+      "subtitle": 28.5,
+      "filmTitle": 17.5,
+      "filmYear": 14,
+      "stars": 18,
+      "logs": 20,
+      "footnote": 23,
+      "handle": 25
+    },
+    "gap": 20,
+    "posterRadius": 5
+  }
+}
