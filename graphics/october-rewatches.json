@@ -1,0 +1,54 @@
+{
+  "title": "movies I've watched in Octobers",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 3,
+  "eyebrow": "from michael lamb's letterboxd diary",
+  "subtitle": "I'll watch anything once ™️ and great ones endlessly",
+  "films": [
+    {
+      "title": "Midsommar",
+      "year": 2019,
+      "logs": 5
+    },
+    {
+      "title": "The Wicker Man",
+      "year": 1973,
+      "logs": 3
+    },
+    {
+      "title": "The Witch",
+      "year": 2015,
+      "logs": 3
+    },
+    {
+      "title": "Labyrinth",
+      "year": 1986,
+      "logs": 2
+    },
+    {
+      "title": "A Ghost Story",
+      "year": 2017,
+      "logs": 2
+    }
+  ],
+  "theme": {
+    "fontSize": {
+      "eyebrow": 26,
+      "title": 65,
+      "subtitle": 30,
+      "filmTitle": 21,
+      "filmYear": 30,
+      "stars": 18,
+      "logs": 20,
+      "footnote": 25,
+      "handle": 25
+    },
+    "gap": 18,
+    "posterRadius": 0,
+    "scale": 1,
+    "showLogs": true
+  },
+  "footer": "log counts are films logged in October any year"
+}

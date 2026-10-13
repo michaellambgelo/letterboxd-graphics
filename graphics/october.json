@@ -1,0 +1,67 @@
+{
+  "title": "movies that feel like October",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1300,
+  "columns": 5,
+  "eyebrow": "from michael lamb's letterboxd diary",
+  "subtitle": "spooky, mischievous, and romantic energy in the air",
+  "films": [
+    {
+      "title": "Donnie Darko",
+      "year": 2001
+    },
+    {
+      "title": "Sinners",
+      "year": 2025
+    },
+    {
+      "title": "Scream",
+      "year": 1996
+    },
+    {
+      "title": "KPop Demon Hunters",
+      "year": 2025
+    },
+    {
+      "title": "Howl's Moving Castle",
+      "year": 2004
+    },
+    {
+      "title": "The Village",
+      "year": 2004
+    },
+    {
+      "title": "The Menu",
+      "year": 2022
+    },
+    {
+      "title": "Arsenic and Old Lace",
+      "year": 1944
+    },
+    {
+      "title": "The Rocky Horror Picture Show",
+      "year": 1975
+    },
+    {
+      "title": "Edward Scissorhands",
+      "year": 1990
+    }
+  ],
+  "theme": {
+    "fontSize": {
+      "eyebrow": 26,
+      "title": 65,
+      "subtitle": 30,
+      "filmTitle": 21,
+      "filmYear": 30,
+      "stars": 18,
+      "logs": 20,
+      "footnote": 25,
+      "handle": 25
+    },
+    "gap": 0,
+    "posterRadius": 5
+  },
+  "footer": "what mood does october put you in?"
+}
