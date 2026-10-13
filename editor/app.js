@@ -210,6 +210,17 @@ function buildLayoutKnobs() {
       markDirty();
     }));
   }
+
+  const row = el('label', 'knob');
+  row.appendChild(el('span', null, 'Log count'));
+  const toggle = el('input');
+  toggle.type = 'checkbox';
+  toggle.checked = (theme().showLogs ?? state.defaults.showLogs) !== false;
+  toggle.style.justifySelf = 'start';
+  toggle.style.accentColor = 'var(--green)';
+  toggle.addEventListener('change', () => { theme().showLogs = toggle.checked; markDirty(); });
+  row.append(toggle, el('span', null, 'show'));
+  box.appendChild(row);
 }
 
 function buildColourKnobs() {

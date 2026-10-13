@@ -59,7 +59,8 @@ Fields on the left, the graphic live-rendering on the right. The preview is the
 - **Type sizes** — a global multiplier plus an individual size for all nine text
   elements: eyebrow, title, subtitle, film title, film year, stars, log count,
   footnote, handle.
-- **Layout** — columns, width, height, grid gap, poster corner radius.
+- **Layout** — columns, width, height, grid gap, poster corner radius, and a
+  toggle to hide the log count.
 - **Colour** — background and the three accents.
 
 **Render PNG** always saves first, so the file you get matches the preview you
@@ -111,6 +112,7 @@ so an older config keeps rendering identically as knobs get added.
   "ground": "#14181c",
   "accent": "#00e054", "accent2": "#40bcf4", "accent3": "#ff8000",
   "gap": 26, "posterRadius": 5,
+  "showLogs": true,
   "scale": 1,
   "fontSize": {
     "eyebrow": 17, "title": 62, "subtitle": 19,
@@ -121,7 +123,8 @@ so an older config keeps rendering identically as knobs get added.
 ```
 
 `scale` multiplies every font size at once; `fontSize` sets them individually, in
-px at the nominal 1080px width.
+px at the nominal 1080px width. `showLogs: false` drops the "N logs" label — useful
+when the lifetime count would mislead, like a graphic about one month's watches.
 
 ## Posters
 
@@ -192,6 +195,8 @@ worth preventing.
 green `#00e054`, blue `#40bcf4`, orange `#ff8000`). Ratings render as real half
 stars, not the text "4.5"; watch counts turn orange once a film is a rewatch.
 The grid follows `columns`, so 6 or 9 films work without touching the template.
+When the rows won't fit the sheet height, the grid narrows and centres so the
+posters shrink to fit; text stays at its configured size.
 
 The Letterboxd decal in the footer is the real brand asset, copied from
 `letterboxd-viewer/assets/images/` — not a hand-rolled imitation.

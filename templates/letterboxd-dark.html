@@ -85,10 +85,14 @@
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 34px 0 6px;
+    min-height: 0;
   }
+  /* Full width by default; fitGrid() narrows it when the rows would overflow. */
   #grid {
     width: 100%;
+    flex: none;
     display: grid;
     grid-template-columns: repeat(var(--cols), 1fr);
     column-gap: var(--gap);
@@ -294,7 +298,7 @@ window.__RENDER__ = function (g) {
           '<div class="film-title">' + esc(f.title) + '</div>' +
           '<div class="film-foot">' +
             '<div class="film-year">' + esc(f.year) + '</div>' +
-            '<div class="film-meta">' + stars(f.rating) + logs(f.logs) + '</div>' +
+            '<div class="film-meta">' + stars(f.rating) + (t.showLogs === false ? '' : logs(f.logs)) + '</div>' +
           '</div>' +
         '</div>'
       ).join('') +
@@ -307,9 +311,33 @@ window.__RENDER__ = function (g) {
       '</div>' +
     '</footer>';
 
-  // The exporter waits on this: fonts settled and every image decoded.
+  // Posters size from the column width, so more rows than the sheet can hold
+  // would spill under the footer (#sheet clips it). Narrow the grid until it
+  // fits: poster height scales with column width, the text below it doesn't.
+  // Runs after fonts settle, since text height decides how much room is left.
+  function fitGrid() {
+    const main = sheet.querySelector('main');
+    const grid = document.getElementById('grid');
+    const cs = getComputedStyle(main);
+    const avail = main.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const cols = Math.max(1, Number(g.columns) || 1);
+    const rows = Math.ceil((g.films || []).length / cols);
+    const gap = parseFloat(getComputedStyle(grid).columnGap) || 0;
+    if (!rows) return;
+
+    for (let pass = 0; pass < 4 && grid.offsetHeight > avail + 0.5; pass++) {
+      const colW = (grid.clientWidth - gap * (cols - 1)) / cols;
+      const fixed = grid.offsetHeight - rows * colW * 1.5;
+      // Titles can rewrap narrower, so later passes also shave a few px.
+      const target = (avail - fixed) / (rows * 1.5) - pass * 2;
+      if (!(target > 0)) break;
+      grid.style.width = Math.floor(target * cols + gap * (cols - 1)) + 'px';
+    }
+  }
+
+  // The exporter waits on this: fonts settled, grid fitted, every image decoded.
   return Promise.all([
-    document.fonts.ready,
+    document.fonts.ready.then(fitGrid),
     ...Array.from(document.images).map((img) =>
       img.complete ? Promise.resolve()
                    : new Promise((res) => { img.onload = img.onerror = res; })

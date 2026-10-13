@@ -133,7 +133,11 @@ Copy `templates/letterboxd-dark.html`. A template must:
    viewport.
 5. Read theme knobs off `graphic.theme` and apply them as CSS custom properties,
    with the template's own values as fallbacks: `ground`, `accent`, `accent2`,
-   `accent3`, `gap`, `posterRadius`, `scale`, and the nine `fontSize` entries.
+   `accent3`, `gap`, `posterRadius`, `scale`, `showLogs` (hide the "N logs"
+   label when `false`), and the nine `fontSize` entries.
+6. Keep the grid inside the sheet. Posters size from column width, so extra
+   rows overflow; `letterboxd-dark` narrows `#grid` after fonts settle
+   (`fitGrid()`) and only then sets `ready = '1'`. Text never shrinks.
 
 Then name it in a config's `template` field. The editor picks up a new template
 automatically; its Type/Layout/Colour knobs assume the contract above.
