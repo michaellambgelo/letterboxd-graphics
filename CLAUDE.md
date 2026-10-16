@@ -22,6 +22,7 @@ npm run fetch-posters <name> -- --yes # don't prompt on the TMDB fallback
 npm run fetch-posters <name> -- --tmdb # force the TMDB path
 npm run edit [<name>]                # visual editor (loopback only)
 npm run edit -- --no-open            # don't launch a browser (use from a tool call)
+npm test                             # theme defaults + fitGrid, in headless Chromium
 ```
 
 `fetch-posters` needs **no credential** for anything you have logged. Pass `--yes`
@@ -29,7 +30,10 @@ when running it from a tool call: only the TMDB fallback prompts, via `readline`
 which hangs forever in a non-TTY shell. There is nothing to confirm on the
 Letterboxd path — the URI is exact.
 
-There is no test suite. Verification is visual: build the PNG and look at it.
+`npm test` (node:test) covers `THEME_DEFAULTS` / theme merging and the
+template's `fitGrid()`, which it drives in headless Chromium like the build does
+(needs the Playwright browser: `npx playwright install chromium`). It does not
+judge how a graphic looks — that is still visual: build the PNG and look at it.
 
 ## Layout
 
@@ -47,6 +51,7 @@ There is no test suite. Verification is visual: build the PNG and look at it.
 | `scripts/fetch-posters.mjs` | Poster gap-filler: Letterboxd primary, TMDB fallback |
 | `scripts/edit.mjs` | Editor server (static + JSON API) |
 | `editor/` | Editor UI — plain HTML/JS, no build step |
+| `test/` | `node:test` suites run by `npm test` |
 | `assets/` | The real Letterboxd decal, copied from letterboxd-viewer |
 
 ## Things that will bite
