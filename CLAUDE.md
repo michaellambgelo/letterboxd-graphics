@@ -22,6 +22,7 @@ npm run fetch-posters <name> -- --yes # don't prompt on the TMDB fallback
 npm run fetch-posters <name> -- --tmdb # force the TMDB path
 npm run edit [<name>]                # visual editor (loopback only)
 npm run edit -- --no-open            # don't launch a browser (use from a tool call)
+npm test                             # node:test + headless Chromium (see below)
 ```
 
 `fetch-posters` needs **no credential** for anything you have logged. Pass `--yes`
@@ -29,7 +30,10 @@ when running it from a tool call: only the TMDB fallback prompts, via `readline`
 which hangs forever in a non-TTY shell. There is nothing to confirm on the
 Letterboxd path — the URI is exact.
 
-There is no test suite. Verification is visual: build the PNG and look at it.
+`npm test` (node:test) covers `THEME_DEFAULTS` / `resolveGraphic` merging and, in headless
+Chromium, the template's `fitGrid()` narrowing and the `showLogs` toggle. It needs
+`npx playwright install chromium` once. It does not judge how a graphic looks, so
+layout changes still need a visual check: build the PNG and look at it.
 
 ## Layout
 
