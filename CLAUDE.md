@@ -31,7 +31,8 @@ which hangs forever in a non-TTY shell. There is nothing to confirm on the
 Letterboxd path — the URI is exact.
 
 `npm test` (node:test) covers `THEME_DEFAULTS` / `resolveGraphic` merging and, in headless
-Chromium, the template's `fitGrid()` narrowing and the `showLogs` toggle. It needs
+Chromium, the template's `fitGrid()` narrowing and the `showLogs` toggle, plus the
+`letterboxd-stats` template (tiles, bar scaling, film-less configs). It needs
 `npx playwright install chromium` once. It does not judge how a graphic looks, so
 layout changes still need a visual check: build the PNG and look at it.
 
@@ -42,6 +43,7 @@ layout changes still need a visual check: build the PNG and look at it.
 | `graphics/*.json` | One file per graphic — the whole spec |
 | `posters/` | `<slug>-<year>.<ext>`, hand-supplied. **Gitignored** |
 | `templates/*.html` | Standalone HTML themes reading `window.__GRAPHIC__` |
+| `templates/letterboxd-stats.html` | Numbers template: `stats` tiles and a `bars` chart, `films: []` |
 | `lib/join.mjs` | Diary join against `letterboxd-viewer` |
 | `lib/slug.mjs` | Canonical slug / poster stem / join key |
 | `lib/graphic.mjs` | Config → render-ready payload; `THEME_DEFAULTS` |

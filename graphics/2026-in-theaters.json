@@ -1,0 +1,112 @@
+{
+  "title": "2026 at the movies",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 8,
+  "eyebrow": "from michael lamb's movie tickets",
+  "subtitle": "33 trips through Nov 8",
+  "theme": {
+    "showLogs": false,
+    "gap": 18,
+    "fontSize": {
+      "filmTitle": 14,
+      "filmYear": 12.5,
+      "stars": 12
+    }
+  },
+  "films": [
+    {
+      "title": "28 Years Later: The Bone Temple",
+      "year": 2026
+    },
+    {
+      "title": "Scream 7",
+      "year": 2026
+    },
+    {
+      "title": "André Is an Idiot",
+      "year": 2025
+    },
+    {
+      "title": "Project Hail Mary",
+      "year": 2026
+    },
+    {
+      "title": "You Got Gold: A Celebration of John Prine",
+      "year": 2025
+    },
+    {
+      "title": "Joybubbles",
+      "year": 2026
+    },
+    {
+      "title": "Obsession",
+      "year": 2025
+    },
+    {
+      "title": "Backrooms",
+      "year": 2026
+    },
+    {
+      "title": "Power Ballad",
+      "year": 2026
+    },
+    {
+      "title": "Disclosure Day",
+      "year": 2026
+    },
+    {
+      "title": "Supergirl",
+      "year": 2026
+    },
+    {
+      "title": "The Invite",
+      "year": 2026
+    },
+    {
+      "title": "The Odyssey",
+      "year": 2026
+    },
+    {
+      "title": "Tony",
+      "year": 2026
+    },
+    {
+      "title": "Spider-Man: Brand New Day",
+      "year": 2026
+    },
+    {
+      "title": "Coyote vs. Acme",
+      "year": 2026
+    },
+    {
+      "title": "Buddy",
+      "year": 2026
+    },
+    {
+      "title": "Akira",
+      "year": 1988
+    },
+    {
+      "title": "Hope",
+      "year": 2026
+    },
+    {
+      "title": "Resident Evil",
+      "year": 2026
+    },
+    {
+      "title": "Fresh Meat",
+      "year": 2026
+    },
+    {
+      "title": "You Can See Everything",
+      "year": 2026
+    },
+    {
+      "title": "Godzilla Minus Zero",
+      "year": 2026
+    }
+  ]
+}

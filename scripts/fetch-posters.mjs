@@ -46,7 +46,7 @@ async function main() {
   const cfg = await readConfig(args.name);
 
   const missing = [];
-  for (const film of cfg.films) {
+  for (const film of cfg.films || []) {
     if (film.poster) continue;                 // explicit path, not ours to manage
     const have = await findPosterFile(film);
     if (have) console.log(`  have  ${have}`);

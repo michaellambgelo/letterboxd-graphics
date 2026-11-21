@@ -1,0 +1,86 @@
+{
+  "title": "22 trips to The Capri",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 6,
+  "eyebrow": "from michael lamb's movie tickets",
+  "subtitle": "Jackson's independent theater: repertory nights, free screenings, new releases",
+  "theme": {
+    "showLogs": false
+  },
+  "films": [
+    {
+      "title": "The Big Lebowski",
+      "year": 1998
+    },
+    {
+      "title": "Kill Bill: Vol. 1",
+      "year": 2003
+    },
+    {
+      "title": "Kill Bill: Vol. 2",
+      "year": 2004
+    },
+    {
+      "title": "Halloween",
+      "year": 1978
+    },
+    {
+      "title": "The Rocky Horror Picture Show",
+      "year": 1975
+    },
+    {
+      "title": "Thor: Love and Thunder",
+      "year": 2022
+    },
+    {
+      "title": "Ant-Man and the Wasp: Quantumania",
+      "year": 2023
+    },
+    {
+      "title": "Sing Sing",
+      "year": 2023
+    },
+    {
+      "title": "Longlegs",
+      "year": 2024
+    },
+    {
+      "title": "The Brutalist",
+      "year": 2024
+    },
+    {
+      "title": "Sinners",
+      "year": 2025
+    },
+    {
+      "title": "André Is an Idiot",
+      "year": 2025
+    },
+    {
+      "title": "You Got Gold: A Celebration of John Prine",
+      "year": 2025
+    },
+    {
+      "title": "Scream 7",
+      "year": 2026
+    },
+    {
+      "title": "Joybubbles",
+      "year": 2026
+    },
+    {
+      "title": "Power Ballad",
+      "year": 2026
+    },
+    {
+      "title": "The Invite",
+      "year": 2026
+    },
+    {
+      "title": "Tony",
+      "year": 2026
+    }
+  ]
+}

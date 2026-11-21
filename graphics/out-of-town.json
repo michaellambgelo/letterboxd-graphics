@@ -1,0 +1,26 @@
+{
+  "title": "watched out of town",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1080,
+  "columns": 3,
+  "eyebrow": "from michael lamb's movie tickets",
+  "footer": "Plaza Theatre, Atlanta · AMC Empire 25, New York · Regal Opry Mills, Nashville",
+  "theme": {
+    "showLogs": false
+  },
+  "films": [
+    {
+      "title": "Oldboy",
+      "year": 2003
+    },
+    {
+      "title": "A Quiet Place: Day One",
+      "year": 2024
+    },
+    {
+      "title": "Conclave",
+      "year": 2024
+    }
+  ]
+}

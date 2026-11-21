@@ -1,0 +1,35 @@
+{
+  "title": "16 years of movie tickets",
+  "template": "letterboxd-stats",
+  "width": 1080,
+  "height": 1350,
+  "eyebrow": "from michael lamb's movie tickets",
+  "columns": 2,
+  "stats": [
+    {
+      "value": "134",
+      "label": "theater trips, Sep 2010 to Nov 2026"
+    },
+    {
+      "value": "107",
+      "label": "different films"
+    },
+    {
+      "value": "31",
+      "label": "in IMAX"
+    },
+    {
+      "value": "60",
+      "label": "at Malco Grandview"
+    },
+    {
+      "value": "5",
+      "label": "times I saw Dune: Part Two in IMAX"
+    },
+    {
+      "value": "6",
+      "label": "double-feature days"
+    }
+  ],
+  "films": []
+}

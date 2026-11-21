@@ -1,0 +1,81 @@
+{
+  "title": "seen it in theaters more than once",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 6,
+  "eyebrow": "from michael lamb's movie tickets",
+  "footer": "Dune: Part Two 5x in IMAX in 13 days · Longlegs, Sinners, You Can See Everything 3x · the rest 2x · log counts are lifetime Letterboxd logs",
+  "theme": {
+    "showLogs": true,
+    "fontSize": {
+      "title": 54
+    }
+  },
+  "films": [
+    {
+      "title": "Dune: Part Two",
+      "year": 2024
+    },
+    {
+      "title": "Longlegs",
+      "year": 2024
+    },
+    {
+      "title": "Sinners",
+      "year": 2025
+    },
+    {
+      "title": "You Can See Everything",
+      "year": 2026
+    },
+    {
+      "title": "The Green Knight",
+      "year": 2021
+    },
+    {
+      "title": "The Batman",
+      "year": 2022
+    },
+    {
+      "title": "Top Gun: Maverick",
+      "year": 2022
+    },
+    {
+      "title": "Spider-Man: Across the Spider-Verse",
+      "year": 2023
+    },
+    {
+      "title": "Nosferatu",
+      "year": 2024
+    },
+    {
+      "title": "The Brutalist",
+      "year": 2024
+    },
+    {
+      "title": "Mickey 17",
+      "year": 2025
+    },
+    {
+      "title": "Weapons",
+      "year": 2025
+    },
+    {
+      "title": "Obsession",
+      "year": 2025
+    },
+    {
+      "title": "Project Hail Mary",
+      "year": 2026
+    },
+    {
+      "title": "Coyote vs. Acme",
+      "year": 2026
+    },
+    {
+      "title": "Buddy",
+      "year": 2026
+    }
+  ]
+}

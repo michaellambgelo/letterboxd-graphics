@@ -1,0 +1,63 @@
+{
+  "title": "double feature days",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 4,
+  "eyebrow": "from michael lamb's movie tickets",
+  "subtitle": "6 days I bought two tickets",
+  "footer": "Sep 18 '22 · Jul 20 '23 · Aug 4 '24 · Sep 4 '24 · May 3 '25 · Sep 1 '26",
+  "theme": {
+    "showLogs": false
+  },
+  "films": [
+    {
+      "title": "Kill Bill: Vol. 1",
+      "year": 2003
+    },
+    {
+      "title": "Kill Bill: Vol. 2",
+      "year": 2004
+    },
+    {
+      "title": "Barbie",
+      "year": 2023
+    },
+    {
+      "title": "Oppenheimer",
+      "year": 2023
+    },
+    {
+      "title": "Longlegs",
+      "year": 2024
+    },
+    {
+      "title": "Trap",
+      "year": 2024
+    },
+    {
+      "title": "AfrAId",
+      "year": 2024
+    },
+    {
+      "title": "Beetlejuice Beetlejuice",
+      "year": 2024
+    },
+    {
+      "title": "Sinners",
+      "year": 2025
+    },
+    {
+      "title": "Thunderbolts*",
+      "year": 2025
+    },
+    {
+      "title": "Coyote vs. Acme",
+      "year": 2026
+    },
+    {
+      "title": "Buddy",
+      "year": 2026
+    }
+  ]
+}
