@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>letterboxd-graphics: stats</title>
+<style>
+  :root {
+    /* Overridden per-graphic from cfg.theme — see THEME_DEFAULTS in lib/graphic.mjs.
+       The values here are the fallbacks, so a config with no theme block
+       renders exactly as it always did. */
+    --ground:  #14181c;   /* Letterboxd page background */
+    --raised:  #1c2228;
+    --ink:     #ffffff;
+    --muted:   #9ab;      /* LB metadata grey-blue */
+    --faint:   #678;
+    --green:   #00e054;
+    --blue:    #40bcf4;
+    --orange:  #ff8000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Helvetica Neue", -apple-system, "Segoe UI", Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #sheet {
+    width: var(--w);
+    height: var(--h);
+    padding: 62px 60px 52px;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #1b222a 0%, transparent 60%),
+      var(--ground);
+    overflow: hidden;
+  }
+
+  /* ---- header ---- */
+  header { flex: none; }
+
+  .eyebrow {
+    font-size: var(--fs-eyebrow);
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin-top: 16px;
+    font-size: var(--fs-title);
+    line-height: 1.02;
+    font-weight: 300;
+    letter-spacing: -.022em;
+    color: var(--ink);
+  }
+  h1 .accent {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    margin-top: 16px;
+    font-size: var(--fs-subtitle);
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 74%;
+    font-weight: 300;
+  }
+
+  .rule {
+    margin-top: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 46%, var(--accent3) 100%);
+    opacity: .95;
+  }
+
+  /* ---- numbers ---- */
+  /* No posters here: the main area holds big-number tiles, a bar chart, or
+     both stacked. Everything sizes from the nine shared type knobs, so the
+     editor's Type panel still drives it:
+       stat value  = title x 1.9      stat label = subtitle x 1.1
+       bar value   = filmTitle x 1.3  bar label  = filmTitle
+       bar note    = logs */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--gap) + 8px);
+    padding: 34px 0 30px;
+    min-height: 0;
+  }
+
+  #stats {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-auto-rows: 1fr;
+    gap: var(--gap);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 30px 24px;
+    border-radius: calc(var(--poster-radius) * 2);
+    background: var(--raised);
+    border: 1px solid #232a31;
+    box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    min-width: 0;
+  }
+  .stat-value {
+    font-size: calc(var(--fs-title) * 1.9);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -.035em;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .stat:nth-child(3n+2) .stat-value { color: var(--accent2); }
+  .stat:nth-child(3n+3) .stat-value { color: var(--accent3); }
+  .stat-label {
+    margin-top: 14px;
+    font-size: calc(var(--fs-subtitle) * 1.1);
+    line-height: 1.35;
+    font-weight: 300;
+    color: var(--muted);
+  }
+
+  /* Vertical bars. Each column is value / bar / label; the bar track flexes,
+     so the chart fills whatever height the header and footer leave. */
+  #bars {
+    flex: 1.4;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--gap) * .62);
+    /* Room under the labels for the absolutely-placed notes. */
+    padding-bottom: calc(var(--fs-logs) * 1.9);
+  }
+  .bar-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  /* The track is the plot area: a bar's height is a percentage of it, so bars
+     stay exactly proportional. The value label floats above its bar, in the
+     headroom reserved by margin-top, and never takes height from the bar. */
+  .bar-track {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    position: relative;
+    margin-top: calc(var(--fs-film-title) * 1.3 * 1.2 + 9px);
+  }
+  .bar-value {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-bottom: 9px;
+    text-align: center;
+    line-height: 1.2;
+    font-size: calc(var(--fs-film-title) * 1.3);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 3px;
+    border-radius: var(--poster-radius) var(--poster-radius) 0 0;
+    background: #2c353d;            /* the star-track grey */
+  }
+  .bar-label {
+    margin-top: 12px;
+    padding-top: 11px;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #232a31;
+    font-size: var(--fs-film-title);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .bar-note {
+    position: absolute;
+    top: 100%;
+    margin-top: 5px;
+    font-size: var(--fs-logs);
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .bar-col.hi .bar { background: var(--accent); }
+  .bar-col.hi .bar-value { color: var(--ink); }
+  .bar-col.hi .bar-label { color: var(--ink); }
+  .bar-col.hi .bar-note { color: var(--accent); }
+  /* A note is wider than its column; at either edge, anchor it inward so it
+     cannot run into the sheet padding. */
+  .bar-col:last-child .bar-note { right: 0; }
+  .bar-col:first-child .bar-note { left: 0; }
+
+  /* ---- footer ---- */
+  footer {
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #232a31;
+  }
+  .footnote {
+    font-size: var(--fs-footnote);
+    line-height: 1.5;
+    color: var(--faint);
+    max-width: 78%;
+    font-weight: 300;
+  }
+  .handle {
+    font-size: var(--fs-handle);
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .handle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  /* The official decal, copied from letterboxd-viewer — not a hand-rolled
+     imitation. It is a round badge on its own #202830 ground. */
+  .handle .decal {
+    width: 22px;
+    height: 22px;
+    display: block;
+    flex: none;
+  }
+</style>
+</head>
+<body>
+<div id="sheet"></div>
+
+<script>
+// The numbers template: big-number tiles (graphic.stats) and/or a vertical bar
+// chart (graphic.bars) under the same header and footer as letterboxd-dark.
+// graphic.films is ignored; these configs carry an empty array.
+//
+// window.__RENDER__(graphic) paints the sheet and resolves when it has settled.
+// The PNG build injects window.__GRAPHIC__ before load and lets the auto-call
+// below fire; the editor calls __RENDER__ directly on every keystroke, so the
+// preview and the export run the exact same code.
+window.__RENDER__ = function (g) {
+  const sheet = document.getElementById('sheet');
+  document.body.dataset.ready = '0';
+
+  const t = g.theme || {};
+  const root = document.documentElement.style;
+  if (t.ground) root.setProperty('--ground', t.ground);
+  if (t.accent) root.setProperty('--accent', t.accent);
+  if (t.accent2) root.setProperty('--accent2', t.accent2);
+  if (t.accent3) root.setProperty('--accent3', t.accent3);
+  root.setProperty('--gap', (t.gap ?? 26) + 'px');
+  root.setProperty('--poster-radius', (t.posterRadius ?? 5) + 'px');
+
+  // Type sizes: each element's px value times the global scale.
+  var scale = t.scale == null ? 1 : Number(t.scale) || 1;
+  var fs = t.fontSize || {};
+  var FS_DEFAULTS = {
+    eyebrow: 17, title: 62, subtitle: 19, filmTitle: 16.5,
+    filmYear: 14, stars: 15, logs: 13, footnote: 14.5, handle: 14,
+  };
+  var FS_VARS = {
+    eyebrow: '--fs-eyebrow', title: '--fs-title', subtitle: '--fs-subtitle',
+    filmTitle: '--fs-film-title', filmYear: '--fs-film-year', stars: '--fs-stars',
+    logs: '--fs-logs', footnote: '--fs-footnote', handle: '--fs-handle',
+  };
+  Object.keys(FS_VARS).forEach(function (k) {
+    var px = fs[k] == null ? FS_DEFAULTS[k] : Number(fs[k]);
+    if (!isFinite(px)) px = FS_DEFAULTS[k];
+    root.setProperty(FS_VARS[k], (px * scale) + 'px');
+  });
+
+  sheet.style.setProperty('--w', g.width + 'px');
+  sheet.style.setProperty('--h', g.height + 'px');
+  sheet.style.setProperty('--cols', g.columns);
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]
+  ));
+
+  // Split the title so the final word can carry the accent weight.
+  function renderTitle(title) {
+    const words = String(title || '').trim().split(/\s+/);
+    if (!words.length) return '';
+    const last = words.pop();
+    return esc(words.join(' ')) + (words.length ? ' ' : '') +
+           '<span class="accent">' + esc(last) + '</span>';
+  }
+
+  // Bars scale to the largest value. The highlighted bar is the one marked
+  // `highlight: true`, or the last one when none is marked ("latest in green").
+  function renderBars(bars) {
+    var max = Math.max.apply(null, bars.map(function (b) { return Number(b.value) || 0; }).concat([0]));
+    var marked = bars.some(function (b) { return b.highlight === true; });
+    return bars.map(function (b, i) {
+      var v = Number(b.value) || 0;
+      var pct = max > 0 ? Math.max(0, v / max) * 100 : 0;
+      var hi = marked ? b.highlight === true : i === bars.length - 1;
+      return '<div class="bar-col' + (hi ? ' hi' : '') + '">' +
+               '<div class="bar-track">' +
+                 '<div class="bar-value" style="bottom:' + pct + '%">' + esc(b.value) + '</div>' +
+                 '<div class="bar" style="height:' + pct + '%"></div>' +
+               '</div>' +
+               '<div class="bar-label">' + esc(b.label) + '</div>' +
+               (b.note ? '<div class="bar-note">' + esc(b.note) + '</div>' : '') +
+             '</div>';
+    }).join('');
+  }
+
+  var statList = Array.isArray(g.stats) ? g.stats : [];
+  var barList = Array.isArray(g.bars) ? g.bars : [];
+
+  sheet.innerHTML =
+    '<header>' +
+      (g.eyebrow ? '<div class="eyebrow">' + esc(g.eyebrow) + '</div>' : '') +
+      '<h1>' + renderTitle(g.title) + '</h1>' +
+      (g.subtitle ? '<p class="subtitle">' + esc(g.subtitle) + '</p>' : '') +
+      '<div class="rule"></div>' +
+    '</header>' +
+    '<main>' +
+      (statList.length
+        ? '<div id="stats">' + statList.map(function (s) {
+            return '<div class="stat">' +
+                     '<div class="stat-value">' + esc(s.value) + '</div>' +
+                     '<div class="stat-label">' + esc(s.label) + '</div>' +
+                   '</div>';
+          }).join('') + '</div>'
+        : '') +
+      (barList.length ? '<div id="bars">' + renderBars(barList) + '</div>' : '') +
+    '</main>' +
+    '<footer>' +
+      '<div class="footnote">' + esc(g.footer || '') + '</div>' +
+      '<div class="handle">' +
+        '<img class="decal" src="/assets/letterboxd-decal-dots-rgb.svg" alt="Letterboxd">' +
+        '<span>' + esc(g.handle || 'letterboxd.com/michaellamb') + '</span>' +
+      '</div>' +
+    '</footer>';
+
+  // The exporter waits on this: fonts settled and every image (the decal) decoded.
+  return Promise.all([
+    document.fonts.ready,
+    ...Array.from(document.images).map((img) =>
+      img.complete ? Promise.resolve()
+                   : new Promise((res) => { img.onload = img.onerror = res; })
+    ),
+  ]).then(() => { document.body.dataset.ready = '1'; });
+};
+
+if (window.__GRAPHIC__) window.__RENDER__(window.__GRAPHIC__);
+</script>
+</body>
+</html>

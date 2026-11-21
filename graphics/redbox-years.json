@@ -1,0 +1,78 @@
+{
+  "title": "the Redbox years",
+  "template": "letterboxd-dark",
+  "width": 1080,
+  "height": 1350,
+  "columns": 6,
+  "eyebrow": "from michael lamb's movie tickets",
+  "subtitle": "DVD rentals, 2007-2015, per the receipts in my inbox",
+  "theme": {
+    "showLogs": false
+  },
+  "films": [
+    {
+      "title": "The Prestige",
+      "year": 2006
+    },
+    {
+      "title": "Juno",
+      "year": 2007
+    },
+    {
+      "title": "Dan in Real Life",
+      "year": 2007
+    },
+    {
+      "title": "Sweeney Todd: The Demon Barber of Fleet Street",
+      "year": 2007
+    },
+    {
+      "title": "Ratatouille",
+      "year": 2007
+    },
+    {
+      "title": "Hitman",
+      "year": 2007
+    },
+    {
+      "title": "3:10 to Yuma",
+      "year": 2007
+    },
+    {
+      "title": "Vantage Point",
+      "year": 2008
+    },
+    {
+      "title": "The Happening",
+      "year": 2008
+    },
+    {
+      "title": "Body of Lies",
+      "year": 2008
+    },
+    {
+      "title": "Black Hawk Down",
+      "year": 2001
+    },
+    {
+      "title": "Snatch",
+      "year": 2000
+    },
+    {
+      "title": "Public Enemies",
+      "year": 2009
+    },
+    {
+      "title": "Shutter Island",
+      "year": 2010
+    },
+    {
+      "title": "Due Date",
+      "year": 2010
+    },
+    {
+      "title": "Birdman or (The Unexpected Virtue of Ignorance)",
+      "year": 2014
+    }
+  ]
+}

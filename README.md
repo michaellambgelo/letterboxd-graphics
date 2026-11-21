@@ -102,6 +102,27 @@ Films render in the order written. Per-film overrides:
 Setting both `rating` and `logs` skips the diary join entirely, so a graphic
 doesn't have to be about your own watches.
 
+### Numbers instead of posters
+
+`"template": "letterboxd-stats"` draws big-number tiles and/or a vertical bar
+chart under the same header and footer. It reads two optional arrays, and
+`films` is an empty array:
+
+```json
+{
+  "title": "theater trips per year",
+  "template": "letterboxd-stats",
+  "columns": 2,
+  "stats": [{ "value": "134", "label": "theater trips" }],
+  "bars": [{ "label": "2026", "value": 33, "note": "through Nov 8" }],
+  "films": []
+}
+```
+
+`columns` sets the tile columns. The last bar is drawn in the accent colour and
+the rest muted; put `"highlight": true` on a bar to pick a different one. Values
+are shown as written. Nothing here is joined from the diary.
+
 ### Theme
 
 Optional. Anything omitted falls back to `THEME_DEFAULTS` in `lib/graphic.mjs`,
